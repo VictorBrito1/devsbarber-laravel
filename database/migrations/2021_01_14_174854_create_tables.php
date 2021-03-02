@@ -85,14 +85,14 @@ class CreateTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
         Schema::dropIfExists('user_favorites');
         Schema::dropIfExists('user_appointments');
-        Schema::dropIfExists('barbers');
         Schema::dropIfExists('barber_photos');
         Schema::dropIfExists('barber_reviews');
         Schema::dropIfExists('barber_services');
         Schema::dropIfExists('barber_testimonials');
         Schema::dropIfExists('barber_availability');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('barbers');
     }
 }
