@@ -1,21 +1,33 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarberController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+});
+
+Route::group(['prefix' => 'users'], function () {
+    Route::post('/', [UserController::class, 'create']);
+    Route::get('/me', [UserController::class, 'read']);
+    Route::put('/me', [UserController::class, 'update']);
+
+    Route::get('/favorites', [UserController::class, 'favorites']);
+    Route::post('/favorite', [UserController::class, 'addFavorite']);
+
+    Route::get('/appointments', [UserController::class, 'getAppointments']);
+});
+
+Route::group(['prefix' => 'barbers'], function () {
+    Route::get('/search', [BarberController::class, 'search']);
+
+    Route::get('/', [BarberController::class, 'list']);
+    Route::get('/{id}', [BarberController::class, 'read']);
+    Route::post('/{id}/appointment', [BarberController::class, 'setAppointment']);
 });
