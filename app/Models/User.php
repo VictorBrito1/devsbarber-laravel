@@ -24,6 +24,23 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function favorites()
+    {
+        return $this->belongsToMany(Barber::class, 'user_favorites', 'user_id', 'barber_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function appointments()
+    {
+        return $this->belongsToMany(Barber::class, 'user_appointments', 'user_id', 'barber_id')
+            ->withPivot('appointment_at');
+    }
+
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
