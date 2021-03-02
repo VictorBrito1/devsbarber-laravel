@@ -17,6 +17,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('/', [UserController::class, 'create']);
     Route::get('/me', [UserController::class, 'read']);
     Route::put('/me', [UserController::class, 'update']);
+    Route::post('/avatar', [UserController::class, 'updateAvatar']);
 
     Route::get('/favorites', [UserController::class, 'favorites']);
     Route::post('/favorite', [UserController::class, 'addFavorite']);
