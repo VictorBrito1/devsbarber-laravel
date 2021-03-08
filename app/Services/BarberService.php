@@ -3,74 +3,71 @@
 namespace App\Services;
 
 use App\Models\Barber;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BarberService
 {
     /**
-     * @var ImageService
+     * @param $requestData
+     * @return mixed
      */
-    private $imageService;
-
-    /**
-     * BarberService constructor.
-     * @param ImageService $imageService
-     */
-    public function __construct(ImageService $imageService)
+    public function list($requestData)
     {
-        $this->imageService = $imageService;
-    }
+        $lat = $requestData['lat'] ?? null;
+        $lng = $requestData['lng'] ?? null;
+        $city = $requestData['city'] ?? null;
+        $offset = $requestData['offset'] ?? 0;
 
-    /**
-     * @param $data
-     * @return Barber
-     */
-    public function create($data)
-    {
-        $barber = new Barber();
-        $barber->name = $data['name'];
-        $barber->longitude = $data['longitude'] ?? null;
-        $barber->latitude = $data['latitude'] ?? null;
-        $barber->save();
+        if ($city) {
+            $res = $this->searchGeo($city);
 
-        return $barber;
-    }
+            if ($res && count($res['results']) > 0) {
+                $lat = $res['results'][0]['geometry']['location']['lat'];
+                $lng = $res['results'][0]['geometry']['location']['lng'];
+            }
+        } elseif ($lat && $lng) {
+            $res = $this->searchGeo("$lat,$lng");
 
-    /**
-     * @param $avatar
-     * @param $barberId
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
-     */
-    public function updateAvatar($avatar, $barberId)
-    {
-        $barber = Barber::find($barberId);
-
-        if (!$barber) {
-            throw new NotFoundHttpException(null, null, 0, ['errors' => 'Barber not found.']);
+            if ($res && count($res['results']) > 0) {
+                $city = $res['results'][0]['formatted_address'];
+            }
+        } else {
+            $lat = '-23.5630907';
+            $lng = '-46.6682795';
+            $city = 'São Paulo';
         }
 
-        $filename = $this->imageService->save($avatar, '/media/avatars', 200, 200);
+        $barbers = Barber::select(Barber::raw("*, SQRT(
+            POW(69.1 * (latitude - $lat), 2) +
+            POW(69.1 * ($lng - longitude) * COS(latitude / 57.3), 2)) AS distance"))
+            ->havingRaw('distance < ?', [10]) //Nearest
+            ->orderBy('distance', 'ASC')
+            ->offset($offset)
+            ->limit(5)
+            ->get();
 
-        $barber->avatar = $filename;
-        $barber->save();
+        $data['barbers'] = $barbers;
+        $data['loc'] = $city;
 
-        return url("/media/avatars/{$filename}");
+        return $data;
     }
 
     /**
-     * @param $id
-     * @return bool
+     * @param $address
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete($id)
+    private function searchGeo($address)
     {
-        $barber = Barber::find($id);
+        $key = env('MAPS_KEY', null);
 
-        if (!$barber) {
-            throw new NotFoundHttpException(null, null, 0, ['errors' => 'Barber not found.']);
-        }
+        $address = urlencode($address);
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$key";
 
-        $barber->delete();
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $res = curl_exec($curl);
+        curl_close($curl);
 
-        return true;
+        return json_decode($res, true);
     }
 }

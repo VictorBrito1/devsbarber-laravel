@@ -14,6 +14,15 @@ class Barber extends Model
     const BARBER_KEY = 'barber_id';
 
     /**
+     * @param $value
+     * @return string
+     */
+    public function getAvatarAttribute($value): string
+    {
+        return url("media/avatars/{$value}");
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function appointments()

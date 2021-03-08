@@ -16,9 +16,9 @@ class User extends Authenticatable implements JWTSubject
 
     /**
      * @param $value
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
+     * @return string
      */
-    public function getAvatarAttribute($value)
+    public function getAvatarAttribute($value): string
     {
         return url("/media/avatars/$value");
     }
