@@ -48,6 +48,14 @@ class UserController extends Controller
     }
 
     /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function read()
+    {
+        return response()->json($this->currentUser);
+    }
+
+    /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
