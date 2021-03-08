@@ -22,4 +22,13 @@ class BarberRepository
             ->where('id', $id)
             ->first();
     }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public function listBarbersByName($name)
+    {
+        return Barber::where('name', 'like', "%$name%")->get();
+    }
 }

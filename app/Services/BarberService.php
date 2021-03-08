@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Barber;
 use App\Models\UserAppointment;
 use App\Repositories\BarberRepository;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BarberService
@@ -220,5 +221,18 @@ class BarberService
         $newAppointment->save();
 
         return $newAppointment;
+    }
+
+    /**
+     * @param $q
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function search($q) {
+        Validator::make(['q' => $q], [
+            'q' => 'required|string'
+        ])->validate();
+
+        return $this->barberRepository->listBarbersByName($q);
     }
 }

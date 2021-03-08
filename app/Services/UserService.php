@@ -116,4 +116,15 @@ class UserService
     {
         return $this->currentUser->favorites;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAppointments()
+    {
+        return $this->currentUser->appointments()
+            ->with('user', 'barber', 'service')
+            ->orderBy('appointment_at', 'DESC')
+            ->get();
+    }
 }

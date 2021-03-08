@@ -82,4 +82,12 @@ class UserController extends Controller
     {
         return response()->json($this->userService->favorites());
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAppointments()
+    {
+        return response()->json($this->userService->getAppointments());
+    }
 }
