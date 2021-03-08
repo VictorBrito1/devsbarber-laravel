@@ -108,12 +108,11 @@ class BarberService
         $checkAvailabilityDays = 20;
 
         $barberAppointments = $barber->appointments()
-            ->select('appointment_at')
             ->whereBetween('appointment_at', [
                 date('Y-m-d').' 00:00:00',
                 date('Y-m-d', strtotime("+$checkAvailabilityDays days")).' 23:59:59' //Next 20 days
             ])
-            ->get()
+            ->get('appointment_at')
             ->map(function ($item) {
                 return $item->appointment_at;
             })
