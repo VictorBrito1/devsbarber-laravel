@@ -58,6 +58,16 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
+    public function update(Request $request)
+    {
+        return response()->json($this->userService->update($request->all()));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function updateAvatar(Request $request)
     {
         $url = $this->userService->updateAvatar($request->file('avatar'), $this->currentUser);

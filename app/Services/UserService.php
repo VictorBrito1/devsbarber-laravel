@@ -61,6 +61,30 @@ class UserService
     }
 
     /**
+     * @param $data
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function update($data)
+    {
+        Validator::make($data, [
+            'name' => 'min:2',
+            'email' => 'email|unique:users',
+            'password' => 'string|confirmed|min:6',
+            'password_confirmation' => 'string'
+        ])->validate();
+
+        if (!empty($data['password'])) {
+            $this->currentUser->password = Hash::make($data['password']);
+        }
+
+        $this->currentUser->fill($data);
+        $this->currentUser->save();
+
+        return $this->currentUser;
+    }
+
+    /**
      * @param $avatar
      * @param $currentUser
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
