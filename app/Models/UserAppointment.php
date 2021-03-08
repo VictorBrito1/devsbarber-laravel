@@ -27,4 +27,12 @@ class UserAppointment extends Model
     {
         return $this->belongsTo(Barber::class, 'barber_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function service()
+    {
+        return $this->belongsTo(BarberService::class, 'service_id');
+    }
 }

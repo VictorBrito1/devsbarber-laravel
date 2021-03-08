@@ -47,4 +47,15 @@ class BarberController extends Controller
     {
         return response()->json($this->barberService->read($id));
     }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function setAppointment(Request $request, $id)
+    {
+        return response()->json($this->barberService->setAppointment($id, $request->all()));
+    }
 }
