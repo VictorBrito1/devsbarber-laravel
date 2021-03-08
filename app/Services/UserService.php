@@ -108,4 +108,12 @@ class UserService
 
         return ['favorited' => $favorited];
     }
+
+    /**
+     * @return mixed
+     */
+    public function favorites()
+    {
+        return $this->currentUser->favorites;
+    }
 }

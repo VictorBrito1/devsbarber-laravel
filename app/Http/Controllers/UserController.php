@@ -74,4 +74,12 @@ class UserController extends Controller
     {
         return response()->json($this->userService->favorite($request->input('barber_id')));
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function favorites()
+    {
+        return response()->json($this->userService->favorites());
+    }
 }
