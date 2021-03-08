@@ -13,6 +13,15 @@ class BarberPhoto extends Model
     public $timestamps = false;
 
     /**
+     * @param $value
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
+     */
+    public function getUrlAttribute($value)
+    {
+        return url("media/avatars/{$value}");
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function barber()

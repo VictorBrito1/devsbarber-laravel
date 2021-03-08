@@ -23,12 +23,11 @@ class Barber extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function appointments()
     {
-        return $this->belongsToMany(User::class, 'user_appointments', 'barber_id', 'user_id')
-            ->withPivot('appointment_at');
+        return $this->hasMany(UserAppointment::class, 'barber_id');
     }
 
     /**
@@ -69,5 +68,13 @@ class Barber extends Model
     public function availabilities()
     {
         return $this->hasMany(BarberAvailability::class, self::BARBER_KEY);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function favorites()
+    {
+        return $this->belongsToMany(User::class, 'user_favorites', 'barber_id', 'user_id');
     }
 }

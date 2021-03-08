@@ -11,4 +11,20 @@ class UserAppointment extends Model
 
     protected $table = 'user_appointments';
     public $timestamps = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function barber()
+    {
+        return $this->belongsTo(Barber::class, 'barber_id');
+    }
 }

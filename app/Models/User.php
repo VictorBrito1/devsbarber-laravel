@@ -32,12 +32,11 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function appointments()
     {
-        return $this->belongsToMany(Barber::class, 'user_appointments', 'user_id', 'barber_id')
-            ->withPivot('appointment_at');
+        return $this->hasMany(UserAppointment::class, 'user_id');
     }
 
     /**
