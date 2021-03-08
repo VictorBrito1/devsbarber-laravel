@@ -20,7 +20,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('/avatar', [UserController::class, 'updateAvatar']);
 
     Route::get('/favorites', [UserController::class, 'favorites']);
-    Route::post('/favorite', [UserController::class, 'addFavorite']);
+    Route::post('/favorite', [UserController::class, 'favorite']);
 
     Route::get('/appointments', [UserController::class, 'getAppointments']);
 });

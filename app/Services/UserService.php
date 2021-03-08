@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Barber;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +11,19 @@ use Intervention\Image\Facades\Image;
 
 class UserService
 {
+    /**
+     * @var \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    private $currentUser;
+
+    /**
+     * UserService constructor.
+     */
+    public function __construct()
+    {
+        $this->currentUser = auth()->user();
+    }
+
     /**
      * @param $data
      * @return User
@@ -69,5 +83,29 @@ class UserService
         $currentUser->save();
 
         return url("/media/avatars/{$filename}");
+    }
+
+    /**
+     * @param $barberId
+     * @return bool[]
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function favorite($barberId)
+    {
+        Validator::make(['barber_id' => $barberId], [
+            'barber_id' => 'required|exists:barbers,id'
+        ])->validate();
+
+        $barber = Barber::find($barberId);
+
+        if ($this->currentUser->favorites()->find($barberId)) {
+            $this->currentUser->favorites()->detach($barber);
+            $favorited = false;
+        } else {
+            $this->currentUser->favorites()->attach($barber);
+            $favorited = true;
+        }
+
+        return ['favorited' => $favorited];
     }
 }

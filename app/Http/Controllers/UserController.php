@@ -64,4 +64,14 @@ class UserController extends Controller
 
         return response()->json(['url' => $url]);
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function favorite(Request $request)
+    {
+        return response()->json($this->userService->favorite($request->input('barber_id')));
+    }
 }
